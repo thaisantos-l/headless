@@ -1,0 +1,28 @@
+import { getServerSideSitemapLegacy } from 'next-sitemap'
+import { getPostsPage } from '@/lib/wp'
+
+export const getServerSideProps = async (ctx) => {
+  const base = process.env.SITE_URL || 'https://headless-front-end.vercel.app'
+  const urls = []
+
+  let page = 1
+  while (true) {
+    const { posts, totalPages } = await getPostsPage({ page, perPage: 50 })
+    posts.forEach((p) => {
+      const yh = p.yoast_head_json || {}
+      const isNoIndex = yh?.robots?.index === false
+      if (!isNoIndex) {
+        urls.push({
+          loc: `${base}/post/${p.slug}`,
+          lastmod: p.modified || p.date,
+        })
+      }
+    })
+    if (page >= totalPages) break
+    page++
+  }
+
+  return getServerSideSitemapLegacy(ctx, urls)
+}
+
+export default function SiteMap() { return null }

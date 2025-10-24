@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://headless-front-end.vercel.app/sitemap.xml
+Sitemap: https://headless-front-end.vercel.app/server-sitemap.xml
